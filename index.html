@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Genesis: Hierarchical Satellite Image Synthesis</title>
+<meta name="description" content="Genesis completes a sparse set of seed satellite tiles into a full, zoomable Web-Mercator quadtree — consistent across scales and locations."/>
+<meta property="og:title" content="Genesis: Hierarchical Satellite Image Synthesis"/>
+<meta property="og:description" content="A generative engine that grows complete multi-scale satellite image pyramids from sparse seed tiles."/>
+<meta property="og:type" content="website"/>
+<link href="https://fonts.googleapis.com/css?family=Inter:400,500,600,700&display=swap" rel="stylesheet">
+<style>
+  :root{ --fg:#1c2330; --muted:#6b7686; --accent:#2a7d4f; --accent-d:#1f5f3c; --line:#e6e9ef; --panel:#f7f9fc;}
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:#fff;color:var(--fg);font-family:'Inter',-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+  .wrap{max-width:1060px;margin:0 auto;padding:0 20px}
+  .narrow{max-width:820px;margin:0 auto}
+
+  /* hero */
+  header{padding:64px 0 30px;text-align:center}
+  h1{font-size:2.4rem;font-weight:700;letter-spacing:-.02em;margin:0 0 6px}
+  h1 .tag{color:var(--accent)}
+  .subtitle{font-size:1.15rem;color:var(--muted);margin:0 auto 22px;max-width:720px}
+  .authors{font-size:1.05rem;margin:6px 0}
+  .authors a{color:var(--fg);font-weight:500}
+  .affil,.venue{color:var(--muted);font-size:.98rem}
+  .venue{margin-top:4px}
+  .btns{margin:24px 0 6px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;gap:7px;border:1px solid #20283a;background:#20283a;color:#fff;
+    border-radius:999px;padding:9px 18px;font-size:.92rem;font-weight:500}
+  .btn:hover{background:#2c3650;text-decoration:none}
+  .btn.ghost{background:#fff;color:var(--fg);border-color:var(--line)}
+  .btn.ghost:hover{border-color:var(--accent);color:var(--accent);background:#fff}
+  .btn.soon{background:#eceef2;color:#9aa3b0;border-color:#e3e6ec;cursor:default}
+  .btn.soon:hover{background:#eceef2}
+  .btn.soon em{font-style:normal;font-size:.78rem;opacity:.85;margin-left:2px}
+
+  section{padding:46px 0;border-top:1px solid var(--line)}
+  section.nolide{border-top:none}
+  h2{font-size:1.5rem;font-weight:600;margin:0 0 16px;text-align:center}
+  .sec-lead{color:var(--muted);text-align:center;margin:-6px auto 26px;max-width:760px}
+  .tldr{background:#eef9f2;border-left:3px solid var(--accent);border-radius:8px;padding:12px 16px;margin:0 0 18px}
+  .tldr b{color:var(--accent-d)}
+  p{margin:0 0 14px}
+  figure{margin:0}
+  .fig{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;text-align:center}
+  .fig img,.fig video{max-width:100%;height:auto;border-radius:6px}
+  figcaption{color:var(--muted);font-size:.9rem;margin-top:12px;text-align:center}
+  .gap{margin-top:26px}
+
+  pre{background:#0f1422;color:#e6ebf5;border-radius:12px;padding:18px 20px;overflow:auto;font-size:.85rem;line-height:1.5}
+  footer{padding:40px 0;text-align:center;color:var(--muted);font-size:.85rem}
+</style>
+</head>
+<body>
+
+<!-- ===== HERO ===== -->
+<header class="wrap">
+  <h1><span class="tag">Genesis</span>: A Generative Engine for Hierarchical Satellite Image Synthesis</h1>
+  <p class="subtitle">Grow a complete, zoomable satellite image pyramid — every scale, every location — from a handful of seed tiles.</p>
+  <div class="authors">
+    <a href="https://subash-khanal.github.io" target="_blank">Subash Khanal</a> ·
+    <a href="https://www.linkedin.com/in/yangzhi-cui/" target="_blank">Yangzhi Cui</a> ·
+    <a href="https://dcher95.github.io/" target="_blank">Daniel Cher</a> ·
+    <a href="https://ericx003.github.io/" target="_blank">Eric Xing</a> ·
+    <a href="https://brian-j-wei.github.io/" target="_blank">Brian Wei</a> ·
+    <a href="https://vishu26.github.io/" target="_blank">Srikumar Sastry</a> ·
+    <a href="https://jacobsn.github.io/" target="_blank">Nathan Jacobs</a>
+  </div>
+  <div class="affil">Washington University in St. Louis · <a href="https://mvrl.cse.wustl.edu/" target="_blank">MVRL</a></div>
+  <div class="venue">ACM SIGSPATIAL 2026</div>
+  <div class="btns">
+    <span class="btn soon"><span>📄</span> Paper <em>SIGSPATIAL · soon</em></span>
+    <span class="btn soon"><span>📃</span> arXiv <em>soon</em></span>
+    <a class="btn" href="https://github.com/subash-khanal/genesis" target="_blank"><span>⌥</span> Code</a>
+    <a class="btn" href="https://huggingface.co/MVRL/genesis" target="_blank"><span>🤗</span> Models</a>
+  </div>
+</header>
+
+<!-- ===== TASK ===== -->
+<!-- Demo-video section deliberately omitted for now; when a video is ready, re-insert a
+     "Watch a pyramid grow" section here with a video tag pointing at static/videos/pyramid_demo.mp4 -->
+<section class="wrap nolide" id="task">
+  <h2>The task: multi-scale tile completion</h2>
+  <div class="narrow">
+    <div class="tldr"><b>TL;DR</b> — Given sparse seed tiles at arbitrary positions <i>and</i> zoom
+    levels, synthesize the full Web-Mercator quadtree such that the output preserves every seed, is
+    seamless across neighboring tiles, and stays consistent across zoom levels.</div>
+  </div>
+  <figure class="fig">
+    <img src="static/images/task.png" alt="Sparse seed tiles are completed into a full multi-scale quadtree"/>
+    <figcaption>Seed tiles (red) can sit anywhere in the pyramid; Genesis fills everything else.</figcaption>
+  </figure>
+</section>
+
+<!-- ===== METHOD ===== -->
+<section class="wrap" id="method">
+  <h2>How Genesis works</h2>
+  <p class="sec-lead">Two flow-matching <i>JiT</i> operators — a parent-conditional
+  super-resolution model (one 256&times;256 parent &rarr; the 512&times;512 mosaic of its four
+  children) and a mask-based outpainting model — composed into one pyramid engine.</p>
+  <figure class="fig">
+    <img src="static/images/pipeline.png" alt="The Genesis pyramid-completion pipeline"/>
+    <figcaption>(1) take the seeds &rarr; (2) bring them to a common working level &rarr; (3) greedily
+    outpaint to complete that level &rarr; (4–5) super-resolve down to the leaf tiles &rarr; (6) fill the
+    coarser levels by downsampling — consistent across scales, honoring every seed.</figcaption>
+  </figure>
+</section>
+
+<!-- ===== RESULTS ===== -->
+<section class="wrap" id="results">
+  <h2>Results</h2>
+  <figure class="fig">
+    <img src="static/images/fig_crossscale.jpg" alt="Cross-scale synthesis from seed tiles"/>
+    <figcaption>Zooming from z=15 to z=18 through a generated pyramid introduces no discontinuity —
+    structure sharpens coherently across four levels.</figcaption>
+  </figure>
+  <figure class="fig gap">
+    <img src="static/images/fig_sites.jpg" alt="Pyramid completions across many sites"/>
+    <figcaption>Completions across distinct sites (columns) and zoom levels (rows): outputs are
+    consistent vertically across zoom levels and horizontally within each level.</figcaption>
+  </figure>
+  <figure class="fig gap">
+    <img src="static/images/fig_pyramids.jpg" alt="4-level pyramids grown from sparse seeds"/>
+    <figcaption>Complete 4-level pyramids grown from sparse seed tiles (red).</figcaption>
+  </figure>
+</section>
+
+<!-- ===== RESOURCES ===== -->
+<section class="wrap" id="resources">
+  <h2>Code, models &amp; reproducibility</h2>
+  <p class="sec-lead">Everything is public and auto-downloading — no credentials, no setup.</p>
+  <div class="narrow">
+    <p>🌍 <b>Code</b> — <a href="https://github.com/subash-khanal/genesis" target="_blank">github.com/subash-khanal/genesis</a>:
+    training, evaluation (one command per paper table), the pyramid engine, and interactive Gradio demos.</p>
+    <p>🤗 <b>Models</b> — <a href="https://huggingface.co/MVRL/genesis" target="_blank">huggingface.co/MVRL/genesis</a>:
+    all checkpoints (SR + outpainting, JiT-B/16 &amp; JiT-H/16), the DINOv3-sat encoder, and the
+    evaluation metadata; the model card includes a runnable one-file example on a live Esri tile.</p>
+    <p>🗺️ <b>Benchmark</b> — <a href="https://huggingface.co/datasets/dcher95/dense500" target="_blank">dense500</a>:
+    500 fully-observed depth-4 quadtrees (85 tiles each) across five zoom windows, for scoring
+    pyramid completion against ground truth at every level.</p>
+  </div>
+</section>
+
+<!-- ===== BIBTEX ===== -->
+<section class="wrap" id="bibtex">
+  <h2>Citation</h2>
+<pre>@inproceedings{khanal2026genesis,
+  title     = {{Genesis}: A Generative Engine for Hierarchical Satellite Image Synthesis},
+  author    = {Khanal, Subash and Cui, Yangzhi and Cher, Daniel and Xing, Eric and
+               Wei, Brian and Sastry, Srikumar and Jacobs, Nathan},
+  booktitle = {ACM SIGSPATIAL International Conference on Advances in
+               Geographic Information Systems (SIGSPATIAL)},
+  year      = {2026},
+}</pre>
+</section>
+
+<footer class="wrap">
+  Satellite imagery in figures and demos: Esri World Imagery — Source: Esri, Maxar, Earthstar
+  Geographics, and the GIS User Community. DINOv3-sat encoder from Meta AI's DINOv3 release.<br/>
+  &copy; 2026 <a href="https://mvrl.cse.wustl.edu/" target="_blank">Multimodal Vision Research Laboratory</a>, Washington University in St. Louis.
+</footer>
+
+</body>
+</html>
