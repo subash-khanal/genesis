@@ -22,6 +22,7 @@
   header{padding:64px 0 30px;text-align:center}
   h1{font-size:2.4rem;font-weight:700;letter-spacing:-.02em;margin:0 0 6px}
   h1 .tag{color:var(--accent)}
+  h1 u{text-decoration-color:var(--accent);text-decoration-thickness:3px;text-underline-offset:6px}
   .subtitle{font-size:1.15rem;color:var(--muted);margin:0 auto 22px;max-width:720px}
   .authors{font-size:1.05rem;margin:6px 0}
   .authors a{color:var(--fg);font-weight:500}
@@ -58,7 +59,7 @@
 
 <!-- ===== HERO ===== -->
 <header class="wrap">
-  <h1><span class="tag">Genesis</span>: A Generative Engine for Hierarchical Satellite Image Synthesis</h1>
+  <h1><span class="tag">Genesis</span>: A <u>Gen</u>erative <u>E</u>ngine for Hierarchical <u>S</u>atellite <u>I</u>mage <u>S</u>ynthesis</h1>
   <p class="subtitle">Grow a complete, zoomable satellite image pyramid from a handful of seed tiles.</p>
   <div class="authors">
     <a href="https://subash-khanal.github.io" target="_blank">Subash Khanal</a> ·
@@ -88,7 +89,8 @@
     seamless across neighboring tiles, and stays consistent across zoom levels.</div>
   </div>
   <figure class="fig">
-    <img src="static/images/task.png" alt="Sparse seed tiles are completed into a full multi-scale quadtree"/>
+    <img src="static/images/task.png" alt="Sparse seed tiles are completed into a full multi-scale quadtree"
+         style="width:min(540px,100%)"/>
     <figcaption>Seed tiles (red) can sit anywhere in the pyramid; Genesis fills everything else.</figcaption>
   </figure>
 </section>
