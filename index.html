@@ -47,6 +47,7 @@
   p{margin:0 0 14px}
   figure{margin:0}
   .fig{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;text-align:center}
+  .fig.plain{border:none;background:transparent;padding:0}
   .fig img,.fig video{max-width:100%;height:auto;border-radius:6px}
   figcaption{color:var(--muted);font-size:.9rem;margin-top:12px;text-align:center}
   .gap{margin-top:26px}
@@ -88,7 +89,7 @@
     levels, synthesize the full quadtree such that the output preserves every seed, is
     seamless across neighboring tiles, and stays consistent across zoom levels.</div>
   </div>
-  <figure class="fig">
+  <figure class="fig plain">
     <img src="static/images/task.png" alt="Sparse seed tiles are completed into a full multi-scale quadtree"
          style="width:min(540px,100%)"/>
     <figcaption>Seed tiles (red) can sit anywhere in the pyramid; Genesis fills everything else.</figcaption>
