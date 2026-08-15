@@ -52,7 +52,12 @@
   figcaption{color:var(--muted);font-size:.9rem;margin-top:12px;text-align:center}
   .gap{margin-top:26px}
 
-  pre{background:#0f1422;color:#e6ebf5;border-radius:12px;padding:18px 20px;overflow:auto;font-size:.85rem;line-height:1.5}
+  pre{background:#0f1422;color:#e6ebf5;border-radius:12px;padding:16px 18px;overflow:auto;font-size:.78rem;line-height:1.45}
+  .cite{position:relative;max-width:820px;margin:0 auto}
+  .copybtn{position:absolute;top:10px;right:10px;border:1px solid #2c3650;background:#1a2233;color:#aeb9cc;
+    border-radius:7px;padding:4px 12px;font-size:.75rem;font-family:'Inter',sans-serif;cursor:pointer}
+  .copybtn:hover{background:#2c3650;color:#fff}
+  .copybtn.ok{background:var(--accent);border-color:var(--accent);color:#fff}
   footer{padding:40px 0;text-align:center;color:var(--muted);font-size:.85rem}
 </style>
 </head>
@@ -142,7 +147,9 @@
 <!-- ===== BIBTEX ===== -->
 <section class="wrap" id="bibtex">
   <h2>Citation</h2>
-<pre>@inproceedings{khanal2026genesis,
+  <div class="cite">
+    <button class="copybtn" id="copycite">Copy</button>
+<pre id="citetext">@inproceedings{khanal2026genesis,
   title     = {{Genesis}: A Generative Engine for Hierarchical Satellite Image Synthesis},
   author    = {Khanal, Subash and Cui, Yangzhi and Cher, Daniel and Xing, Eric and
                Wei, Brian and Sastry, Srikumar and Jacobs, Nathan},
@@ -150,7 +157,22 @@
                Geographic Information Systems (SIGSPATIAL)},
   year      = {2026},
 }</pre>
+  </div>
 </section>
+
+<script>
+document.getElementById('copycite').addEventListener('click', function () {
+  var btn = this, text = document.getElementById('citetext').textContent;
+  function done() { btn.textContent = '✓ Copied'; btn.classList.add('ok');
+    setTimeout(function () { btn.textContent = 'Copy'; btn.classList.remove('ok'); }, 1600); }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done);
+  } else {  /* fallback for older browsers */
+    var ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta);
+    ta.select(); document.execCommand('copy'); document.body.removeChild(ta); done();
+  }
+});
+</script>
 
 <footer class="wrap">
   Satellite imagery in figures: Esri World Imagery — Source: Esri, Maxar, Earthstar Geographics,
